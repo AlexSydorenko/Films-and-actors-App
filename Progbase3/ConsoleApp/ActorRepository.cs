@@ -44,19 +44,19 @@ namespace ConsoleApp
             
             SqliteDataReader reader = command.ExecuteReader();
             
+            Actor actor = null;
             if (reader.Read())
             {
-                Actor actor = new Actor();
+                actor = new Actor();
+                actor.id = int.Parse(reader.GetString(0));
                 actor.fullName = reader.GetString(1);
                 actor.age = int.Parse(reader.GetString(2));
                 actor.residence = reader.GetString(3);
-
-                return actor;
             }
             reader.Close();
             connection.Close();
 
-            return null;
+            return actor;
         }
 
         public bool Delete(int id)
@@ -105,6 +105,31 @@ namespace ConsoleApp
             connection.Close();
             
             return true;
+        }
+
+        public Actor GetByFullName(string actorFullName)
+        {
+            connection.Open();
+
+            SqliteCommand command = connection.CreateCommand();
+            command.CommandText = @"SELECT * FROM actors WHERE fullName = $fullName";
+            command.Parameters.AddWithValue("$fullName", actorFullName);
+            
+            SqliteDataReader reader = command.ExecuteReader();
+            
+            Actor actor = null;
+            if (reader.Read())
+            {
+                actor = new Actor();
+                actor.id = int.Parse(reader.GetString(0));
+                actor.fullName = reader.GetString(1);
+                actor.age = int.Parse(reader.GetString(2));
+                actor.residence = reader.GetString(3);
+            }
+            reader.Close();
+            connection.Close();
+
+            return actor;
         }
     }
 }

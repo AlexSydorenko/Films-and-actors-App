@@ -45,19 +45,18 @@ namespace ConsoleApp
             
             SqliteDataReader reader = command.ExecuteReader();
             
+            User user = null;
             if (reader.Read())
             {
-                User user = new User();
+                user = new User();
                 user.id = int.Parse(reader.GetString(0));
                 user.username = reader.GetString(1);
                 user.fullName = reader.GetString(3);
-
-                return user;
             }
             reader.Close();
             connection.Close();
 
-            return null;
+            return user;
         }
 
         public bool Delete(string username)

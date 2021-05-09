@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 namespace ConsoleApp
 {
     public class User
@@ -6,6 +9,7 @@ namespace ConsoleApp
         public string username;
         public string password;
         public string fullName;
+        public List<Review> userReviews;
 
         public override string ToString()
         {

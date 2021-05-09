@@ -45,21 +45,46 @@ namespace ConsoleApp
             
             SqliteDataReader reader = command.ExecuteReader();
             
+            Film film = null;
             if (reader.Read())
             {
-                Film film = new Film();
+                film = new Film();
                 film.id = int.Parse(reader.GetString(0));
                 film.title = reader.GetString(1);
                 film.releaseYear = int.Parse(reader.GetString(2));
                 film.country = reader.GetString(3);
                 film.director = reader.GetString(4);
-
-                return film;
             }
             reader.Close();
             connection.Close();
 
-            return null;
+            return film;
+        }
+
+        public Film GetByTitle(string title)
+        {
+            connection.Open();
+
+            SqliteCommand command = connection.CreateCommand();
+            command.CommandText = @"SELECT * FROM films WHERE title = $title";
+            command.Parameters.AddWithValue("$title", title);
+            
+            SqliteDataReader reader = command.ExecuteReader();
+            
+            Film film = null;
+            if (reader.Read())
+            {
+                film = new Film();
+                film.id = int.Parse(reader.GetString(0));
+                film.title = reader.GetString(1);
+                film.releaseYear = int.Parse(reader.GetString(2));
+                film.country = reader.GetString(3);
+                film.director = reader.GetString(4);
+            }
+            reader.Close();
+            connection.Close();
+
+            return film;
         }
 
         public bool Delete(int id)
