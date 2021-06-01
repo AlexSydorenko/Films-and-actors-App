@@ -9,7 +9,7 @@ namespace ConsoleApp
         public string fullName;
         public int age;
         public string residence;
-        public List<Film> films;
+        public List<Film> films = new List<Film>();
 
         public override string ToString()
         {

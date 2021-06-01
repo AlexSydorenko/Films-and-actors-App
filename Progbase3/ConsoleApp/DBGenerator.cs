@@ -8,7 +8,7 @@ namespace ConsoleApp
 {
     public class DBGenerator
     {
-        public static void ProcessGeneration(SqliteConnection connection)
+        public static void ProcessGeneration(string dbFilepath)
         {
             int numOfFilms = 0;
             Console.Write("Enter number of films to generate: ");
@@ -20,7 +20,7 @@ namespace ConsoleApp
             {
                 // Stopwatch sw = new Stopwatch();
                 // sw.Start();
-                GenerateFilmsAndActors(numOfFilms, connection);
+                GenerateFilmsAndActors(numOfFilms, dbFilepath);
                 Console.WriteLine($"`{numOfFilms}` films and actors who starred in it were successfully added into the database!");
                 // sw.Stop();
                 // Console.WriteLine(sw.Elapsed);
@@ -72,13 +72,13 @@ namespace ConsoleApp
             // }
         }
 
-        static void GenerateFilmsAndActors(int numOfFilms, SqliteConnection connection)
+        static void GenerateFilmsAndActors(int numOfFilms, string dbFilepath)
         {
             Random random = new Random();
 
-            FilmRepository filmRepo = new FilmRepository(connection);
-            ActorRepository actorRepo = new ActorRepository(connection);
-            FilmActorsRepository filmActorsRepo = new FilmActorsRepository(connection);
+            FilmRepository filmRepo = new FilmRepository(dbFilepath);
+            ActorRepository actorRepo = new ActorRepository(dbFilepath);
+            FilmActorsRepository filmActorsRepo = new FilmActorsRepository(dbFilepath);
             string s = "";
             // HashSet<int> uniqueNumbers = new HashSet<int>();
             while (numOfFilms > 0)

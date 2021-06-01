@@ -10,15 +10,13 @@ namespace ConsoleApp
         public int releaseYear;
         public string country;
         public string director;
-        public List<Review> filmReviews;
-        public List<Actor> actors;
+        public List<Review> filmReviews = new List<Review>();
+        public List<Actor> actors = new List<Actor>();
 
+        // TODO: in short form
         public override string ToString()
         {
-            return string.Format($"Title: {this.title}\n" +
-                $"Release year: {this.releaseYear}\n" +
-                $"Country: {this.country}\n" +
-                $"Director: {this.director}");
+            return string.Format($"{this.title} ({this.releaseYear})");
         }
     }
 }

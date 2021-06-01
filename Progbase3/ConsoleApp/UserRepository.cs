@@ -7,9 +7,9 @@ namespace ConsoleApp
     {
         private SqliteConnection connection;
 
-        public UserRepository(SqliteConnection connection)
+        public UserRepository(string dbFilepath)
         {
-            this.connection = connection;
+            this.connection = new SqliteConnection($"Data Source = {dbFilepath}");
         }
 
         public long Insert(User user)
@@ -51,6 +51,32 @@ namespace ConsoleApp
                 user = new User();
                 user.id = int.Parse(reader.GetString(0));
                 user.username = reader.GetString(1);
+                user.password = reader.GetString(2);
+                user.fullName = reader.GetString(3);
+            }
+            reader.Close();
+            connection.Close();
+
+            return user;
+        }
+
+        public User GetById(int id)
+        {
+            connection.Open();
+
+            SqliteCommand command = connection.CreateCommand();
+            command.CommandText = @"SELECT * FROM users WHERE id = $id";
+            command.Parameters.AddWithValue("$id", id);
+            
+            SqliteDataReader reader = command.ExecuteReader();
+            
+            User user = null;
+            if (reader.Read())
+            {
+                user = new User();
+                user.id = int.Parse(reader.GetString(0));
+                user.username = reader.GetString(1);
+                user.password = reader.GetString(2);
                 user.fullName = reader.GetString(3);
             }
             reader.Close();

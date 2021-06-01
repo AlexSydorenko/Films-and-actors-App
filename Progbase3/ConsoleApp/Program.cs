@@ -5,17 +5,28 @@ using System.Text;
 using System.Diagnostics;
 using System.Linq;
 using System.Collections.Generic;
+using Terminal.Gui;
 
 namespace ConsoleApp
 {
     class Program
     {
+        static string databasePath = "/home/alex/projects/progbase3/data/database";
+
         static void Main(string[] args)
         {
-            string databasePath = "/home/alex/projects/progbase3/data/database";
-            SqliteConnection connection = new SqliteConnection($"Data Source={databasePath}");
+            // string databasePath = "/home/alex/projects/progbase3/data/database";
+            // SqliteConnection connection = new SqliteConnection($"Data Source={databasePath}");
 
-            DBGenerator.ProcessGeneration(connection);
+            Application.Init();
+            Toplevel top = Application.Top;
+
+            MainWindow win = new MainWindow(databasePath);
+            top.Add(win);
+
+            Application.Run();
+
+            // DBGenerator.ProcessGeneration(connection);
             
             // UserRepository userRepo = new UserRepository(connection);
             // FilmRepository filmRepo = new FilmRepository(connection);
@@ -23,6 +34,15 @@ namespace ConsoleApp
             // ReviewRepository reviewRepo = new ReviewRepository(connection);
             // FilmActorsRepository filmActorsRepo = new FilmActorsRepository(connection);
 
+
+            // IMPORT / EXPORT TESTING //
+
+            // DataExportAndImport.ExportFilmReviews(reviewRepo, 2, "./export.xml");
+            // DataExportAndImport.ImportFilmReviews(reviewRepo, 1, "./export.xml");
+            // foreach (Review review in filmReviews)
+            // {
+            //     Console.WriteLine(review);
+            // }
 
             // User currentUser = new User();
             // currentUser.id = 1;

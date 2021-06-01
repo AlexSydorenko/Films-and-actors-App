@@ -1,14 +1,15 @@
 using System;
 using Microsoft.Data.Sqlite;
+using System.Collections.Generic;
 
 namespace ConsoleApp
 {
     public class FilmRepository
     {
         private SqliteConnection connection;
-        public FilmRepository(SqliteConnection connection)
+        public FilmRepository(string dbFilepath)
         {
-            this.connection = connection;
+            this.connection = new SqliteConnection($"Data Source = {dbFilepath}");
         }
 
         public long Insert(Film film)
@@ -134,6 +135,144 @@ namespace ConsoleApp
             connection.Close();
             
             return true;
+        }
+
+        private List<Film> SearchFilms(string searchValue)
+        {
+            List<Film> searchFilms = new List<Film>();
+            connection.Open();
+
+            SqliteCommand command = connection.CreateCommand();
+            command.CommandText = @"SELECT * FROM films
+                WHERE title LIKE '%' || $searchValue || '%' OR releaseYear LIKE '%' || $searchValue || '%'";
+
+            command.Parameters.AddWithValue("$searchValue", searchValue);
+            SqliteDataReader reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                Film film = new Film();
+                film.id = int.Parse(reader.GetString(0));
+                film.title = reader.GetString(1);
+                film.releaseYear = int.Parse(reader.GetString(2));
+                film.country = reader.GetString(3);
+                film.director = reader.GetString(4);
+                searchFilms.Add(film);
+            }
+            connection.Close();
+
+            return searchFilms;
+        }
+
+        public int GetTotalPages(int pageSize)
+        {
+            if (pageSize < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pageSize));
+            }
+
+            return (int)Math.Ceiling(this.GetCount() / (double)pageSize);
+        }
+
+        public int GetSearchPagesCount(string searchValue, int pageSize)
+        {
+            if (pageSize < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pageSize));
+            }
+
+            if (string.IsNullOrEmpty(searchValue))
+            {
+                return this.GetTotalPages(pageSize);
+            }
+            return (int)Math.Ceiling(this.SearchFilms(searchValue).Count / (double)pageSize);
+        }
+
+        private long GetCount()
+        {
+            connection.Open();
+        
+            SqliteCommand command = connection.CreateCommand();
+            command.CommandText = @"SELECT COUNT(*) FROM films";
+            
+            long count = (long)command.ExecuteScalar();
+
+            connection.Close();
+            return count;
+        }
+
+        public List<Film> GetSearchPage(string searchValue, int pageNum, int pageSize)
+        {
+            if (string.IsNullOrEmpty(searchValue))
+            {
+                return this.GetPage(pageNum, pageSize);
+            }
+
+            if (pageNum < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pageNum));
+            }
+
+            if (pageSize < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pageSize));
+            }
+
+            List<Film> searchFilms = this.SearchFilms(searchValue);
+
+            List<Film> page = new List<Film>();
+            int offset = (pageNum - 1) * pageSize;
+            for (int i = 0; i < pageSize; i++)
+            {
+                int k = offset + i;
+                if (k >= searchFilms.Count)
+                {
+                    break;
+                }
+
+                page.Add(searchFilms[k]);
+            }
+
+            return page;
+        }
+
+        public List<Film> GetPage(int pageNum, int pageSize)
+        {
+            if (pageNum < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pageNum));
+            }
+
+            if (pageSize < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pageSize));
+            }
+
+            connection.Open();
+
+            SqliteCommand command = connection.CreateCommand();
+            command.CommandText = @"SELECT * FROM films LIMIT $pageSize OFFSET $pageSize * ($pageNumber - 1)";
+            command.Parameters.AddWithValue("$pageSize", pageSize);
+            command.Parameters.AddWithValue("$pageNumber", pageNum);
+
+            SqliteDataReader reader = command.ExecuteReader();
+            List<Film> films = new List<Film>();
+
+            while (reader.Read())
+            {
+                Film film = new Film();
+                film.id = int.Parse(reader.GetString(0));
+                film.title = reader.GetString(1);
+                film.releaseYear = int.Parse(reader.GetString(2));
+                film.country = reader.GetString(3);
+                film.director = reader.GetString(4);
+                
+                films.Add(film);
+            }
+            reader.Close();
+            connection.Close();
+
+            return films;
         }
     }
 }

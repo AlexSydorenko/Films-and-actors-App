@@ -7,9 +7,9 @@ namespace ConsoleApp
     public class FilmActorsRepository
     {
         private SqliteConnection connection;
-        public FilmActorsRepository(SqliteConnection connection)
+        public FilmActorsRepository(string dbFilepath)
         {
-            this.connection = connection;
+            this.connection = new SqliteConnection($"Data Source = {dbFilepath}");
         }
 
         public long Insert(FilmActors filmActor)
@@ -93,6 +93,46 @@ namespace ConsoleApp
             reader.Close();
             connection.Close();
             return films;
+        }
+
+        public bool DeleteFilm(int filmId)
+        {
+            connection.Open();
+
+            SqliteCommand command = connection.CreateCommand();
+            command.CommandText = @"DELETE FROM filmActors WHERE filmId = $filmId";
+            command.Parameters.AddWithValue("$filmId", filmId);
+            
+            int nChanged = command.ExecuteNonQuery();
+            
+            if (nChanged == 0)
+            {
+                connection.Close();
+                return false;
+            }
+
+            connection.Close();
+            return true;
+        }
+
+        public bool DeleteActor(int actorId)
+        {
+            connection.Open();
+
+            SqliteCommand command = connection.CreateCommand();
+            command.CommandText = @"DELETE FROM filmActors WHERE actorId = $actorId";
+            command.Parameters.AddWithValue("$actorId", actorId);
+            
+            int nChanged = command.ExecuteNonQuery();
+            
+            if (nChanged == 0)
+            {
+                connection.Close();
+                return false;
+            }
+
+            connection.Close();
+            return true;
         }
     }
 }

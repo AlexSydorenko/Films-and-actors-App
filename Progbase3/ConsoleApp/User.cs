@@ -9,7 +9,7 @@ namespace ConsoleApp
         public string username;
         public string password;
         public string fullName;
-        public List<Review> userReviews;
+        public List<Review> userReviews = new List<Review>();
 
         public override string ToString()
         {
