@@ -11,7 +11,6 @@ namespace ConsoleApp
         private TextView reviewInput;
         private Label ratingLabel;
         private TextField authorInput;
-        // private ReviewRepository reviewRepo;
         protected Review review;
         private User user;
 
@@ -49,8 +48,6 @@ namespace ConsoleApp
             Label reviewLbl = new Label(2, 8, "Your review:");
             reviewInput = new TextView()
             {
-                // X = rightColumnX,
-                // Y = Pos.Top(reviewLbl),
                 Width = Dim.Fill(),
                 Height = Dim.Fill(),
                 ReadOnly = true,
@@ -62,11 +59,9 @@ namespace ConsoleApp
             Label ratingLbl = new Label(2, 13, "Rating:");
             ratingLabel = new Label(".")
             {
-                // DisplayMode = DisplayModeLayout.Horizontal,
                 X = rightColumnX,
                 Y = Pos.Top(ratingLbl),
                 Width = inputWidth,
-                // HorizontalSpace = 3,
                 
             };
             this.Add(ratingLbl, ratingLabel);

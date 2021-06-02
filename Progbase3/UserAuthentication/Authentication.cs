@@ -34,7 +34,7 @@ namespace ConsoleApp
             SHA256 sha256Hash = SHA256.Create();
             string userPassword = GetHash(sha256Hash, password);
             
-            if (user == null || user.password != userPassword) // or password missmatches with userpassword
+            if (user == null || user.password != userPassword)
             {
                 return null;
             }

@@ -20,6 +20,9 @@ namespace ConsoleApp
             int inputsColumnX = 20;
             int inputWidth = 40;
 
+            Label infoLbl = new Label(2, 3, "You may change only user's role.");
+            this.Add(infoLbl);
+
             // Username
             Label titleLbl = new Label(2, 5, "Username:");
             usernameInput = new TextField("")

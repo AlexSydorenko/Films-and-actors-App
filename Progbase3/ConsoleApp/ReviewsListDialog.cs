@@ -94,9 +94,15 @@ namespace ConsoleApp
             backBtn.Clicked += OnBack;
             this.Add(backBtn);
 
-            searchInput = new TextField(2, 4, 30, "");
+            Label searchLbl = new Label(2, 4, "Search:");
+            searchInput = new TextField("")
+            {
+                X = Pos.Right(searchLbl) + 1,
+                Y = Pos.Top(searchLbl),
+                Width = 30,
+            };
             searchInput.KeyPress += OnSearchEnter;
-            this.Add(searchInput);
+            this.Add(searchLbl, searchInput);
         }
 
         public void SetRepository(ReviewRepository reviewRepo, FilmRepository filmRepo, UserRepository userRepo)
@@ -143,8 +149,6 @@ namespace ConsoleApp
                 this.currentPageLbl.Visible = false;
                 this.totalPagesLbl.Visible = false;
                 this.slash.Visible = false;
-                // this.deleteProductBtn.Visible = false;
-                // this.editProductBtn.Visible = false;
             }
             else
             {
@@ -153,8 +157,6 @@ namespace ConsoleApp
                 this.currentPageLbl.Visible = true;
                 this.totalPagesLbl.Visible = true;
                 this.slash.Visible = true;
-                // this.deleteProductBtn.Visible = true;
-                // this.editProductBtn.Visible = true;
             }
         }
 

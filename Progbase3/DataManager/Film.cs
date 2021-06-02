@@ -12,8 +12,7 @@ namespace ConsoleApp
         public string director;
         public List<Review> filmReviews = new List<Review>();
         public List<Actor> actors = new List<Actor>();
-
-        // TODO: in short form
+        
         public override string ToString()
         {
             return string.Format($"{this.title} ({this.releaseYear})");

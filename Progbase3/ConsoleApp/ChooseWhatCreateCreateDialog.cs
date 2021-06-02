@@ -75,7 +75,7 @@ namespace ConsoleApp
             {
                 if (this.user.role != "admin")
                 {
-                    MessageBox.ErrorQuery("", "Films may be added only by admin!", "OK");
+                    MessageBox.ErrorQuery("", "Actors may be added only by admin!", "OK");
                     return;
                 }
 
@@ -95,13 +95,24 @@ namespace ConsoleApp
                         return;
                     }
 
-                    long actorId = actorRepo.Insert(actor);
+                    long actorId = actorRepo.Exists(actor);
+                    if (actorId == -1)
+                    {
+                        actorId = actorRepo.Insert(actor);
+                    }
                     Film film = filmRepo.GetByTitle(actor.films[0].title);
                     FilmActors filmActors = new FilmActors() { filmId = film.id, actorId = actorId };
-                    filmActorsRepo.Insert(filmActors);
-
-                    MessageBox.Query("", $"Actor `{actor.fullName}` was successfully added to the database! It's id: {actorId}.", "OK");
-                    Application.RequestStop();
+                    if (filmActorsRepo.Exists(filmActors) == -1)
+                    {
+                        filmActorsRepo.Insert(filmActors);
+                        MessageBox.Query("", $"Actor `{actor.fullName}` was successfully added to the database! It's id: {actorId}.", "OK");
+                        Application.RequestStop();
+                    }
+                    else
+                    {
+                        MessageBox.ErrorQuery("", $"You have already added this actor to the database!", "OK");
+                        return;
+                    }
                 }
             }
             else if (selected == 2)

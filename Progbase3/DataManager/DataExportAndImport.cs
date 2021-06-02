@@ -25,23 +25,13 @@ namespace ConsoleApp
 
             int filmId = allReviews[0].filmId;
 
-            // List<Review> filmReviews = new List<Review>();
             foreach (Review review in allReviews)
             {
                 if (review.filmId != filmId)
                 {
-                    // filmReviews.Add(review);
                     throw new ArgumentOutOfRangeException(nameof(review));
                 }
             }
-
-            // foreach (Review review in filmReviews)
-            // {
-            //     if (!reviewRepo.Exists(review.id))
-            //     {
-            //         reviewRepo.Insert(review);
-            //     }
-            // }
 
             return allReviews;
         }

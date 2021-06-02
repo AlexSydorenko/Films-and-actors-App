@@ -133,6 +133,33 @@ namespace ConsoleApp
             return actor;
         }
 
+        public long Exists(Actor actor)
+        {
+            connection.Open();
+
+            SqliteCommand command = connection.CreateCommand();
+            command.CommandText = @"SELECT * FROM actors WHERE fullName = $fullName AND age = $age AND residence = $residence";
+            command.Parameters.AddWithValue("$fullName", actor.fullName);
+            command.Parameters.AddWithValue("$age", actor.age);
+            command.Parameters.AddWithValue("$residence", actor.residence);
+            
+            SqliteDataReader reader = command.ExecuteReader();
+
+            if (reader.Read())
+            {
+                long actorId = int.Parse(reader.GetString(0));
+                
+                reader.Close();
+                connection.Close();
+                return actorId;
+            }
+
+            reader.Close();
+            connection.Close();
+
+            return -1;
+        }
+
         private List<Actor> SearchActors(string searchValue)
         {
             List<Actor> searchActors = new List<Actor>();

@@ -26,8 +26,6 @@ namespace ConsoleApp
             }
             actor.fullName = fullnameInput.Text.ToString();
             actor.residence = residenceInput.Text.ToString();
-            // Film film = new Film() { title = filmInWhichStarredInput.Text.ToString() };
-            // actor.films.Add(film);
             return actor;
         }
     }

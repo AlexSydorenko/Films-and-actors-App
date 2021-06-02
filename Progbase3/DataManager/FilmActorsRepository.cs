@@ -134,5 +134,31 @@ namespace ConsoleApp
             connection.Close();
             return true;
         }
+
+        public long Exists(FilmActors filmActors)
+        {
+            connection.Open();
+
+            SqliteCommand command = connection.CreateCommand();
+            command.CommandText = @"SELECT * FROM filmActors WHERE filmId = $filmId AND actorId = $actorId";
+            command.Parameters.AddWithValue("$filmId", filmActors.filmId);
+            command.Parameters.AddWithValue("$actorId", filmActors.actorId);
+            
+            SqliteDataReader reader = command.ExecuteReader();
+
+            if (reader.Read())
+            {
+                long filmActorId = int.Parse(reader.GetString(0));
+                
+                reader.Close();
+                connection.Close();
+                return filmActorId;
+            }
+
+            reader.Close();
+            connection.Close();
+
+            return -1;
+        }
     }
 }

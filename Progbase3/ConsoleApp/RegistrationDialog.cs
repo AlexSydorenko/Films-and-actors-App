@@ -120,7 +120,6 @@ namespace ConsoleApp
                 return;
             }
 
-            // Authentication authentication = new Authentication(new UserRepository(databasePath));
             if (new UserRepository(databasePath).GetByUsername(this.GetUser().username) != null)
             {
                 MessageBox.ErrorQuery("Error", "User with the same username already exists!", "Change username");

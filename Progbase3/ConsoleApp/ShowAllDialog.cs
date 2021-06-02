@@ -7,7 +7,6 @@ namespace ConsoleApp
         private string databasePath;
         private User user;
 
-        // private ListView listView;
         private RadioGroup radioGroup;
 
         public ShowAllDialog(string databasePath, User user)
