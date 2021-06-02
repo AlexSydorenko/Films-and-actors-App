@@ -12,13 +12,15 @@ namespace ConsoleApp
         private TextField countryInput;
         private TextField directorInput;
         protected Film film;
+        private User user;
 
-        public OpenFilmDialog()
+        public OpenFilmDialog(User user)
         {
             this.Title = "Film info";
 
             int inputsColumnX = 20;
             int inputWidth = 40;
+            this.user = user;
 
             // Info label
             Label infoLbl = new Label(2, 2, "Full information about film");
@@ -103,7 +105,13 @@ namespace ConsoleApp
 
         public void OnDeleteFilm()
         {
-            int index = MessageBox.Query("Delete actor", "Are you sure?", "No", "Yes");
+            if (this.user.role != "admin")
+            {
+                MessageBox.ErrorQuery("", "Films can be deleted only by admins!", "OK");
+                return;
+            }
+
+            int index = MessageBox.Query("Delete film", "Are you sure?", "No", "Yes");
             if (index == 1)
             {
                 this.deleted = true;
@@ -113,6 +121,12 @@ namespace ConsoleApp
 
         public void OnEditFilm()
         {
+            if (this.user.role != "admin")
+            {
+                MessageBox.ErrorQuery("", "Films can be edited only by admins!", "OK");
+                return;
+            }
+
             EditFilmDialog dialog = new EditFilmDialog();
             dialog.SetFilm(this.film);
 

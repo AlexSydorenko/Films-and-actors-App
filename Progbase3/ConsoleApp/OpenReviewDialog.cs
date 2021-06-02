@@ -11,11 +11,15 @@ namespace ConsoleApp
         private TextView reviewInput;
         private Label ratingLabel;
         private TextField authorInput;
+        // private ReviewRepository reviewRepo;
         protected Review review;
+        private User user;
 
-        public OpenReviewDialog()
+        public OpenReviewDialog(User user)
         {
             this.Title = "Review info";
+            this.user = user;
+            // this.reviewRepo = reviewRepo;
 
             int rightColumnX = 20;
             int inputWidth = 40;
@@ -122,6 +126,16 @@ namespace ConsoleApp
 
         public void OnDeleteReview()
         {
+            if (this.user.role == "admin")
+            {
+
+            }
+            else if (this.user.username != this.GetReview().author.username)
+            {
+                MessageBox.ErrorQuery("", "You can delete only your's reviews!", "OK");
+                return;
+            }
+
             int index = MessageBox.Query("Delete review", "Are you sure?", "No", "Yes");
             if (index == 1)
             {
@@ -132,6 +146,12 @@ namespace ConsoleApp
 
         public void OnEditReview()
         {
+            if (this.user.username != this.GetReview().author.username)
+            {
+                MessageBox.ErrorQuery("", "You can edit only your's reviews!", "OK");
+                return;
+            }
+
             EditReviewDialog dialog = new EditReviewDialog();
             dialog.SetReview(this.review);
 
@@ -139,7 +159,7 @@ namespace ConsoleApp
 
             if (!dialog.canceled)
             {
-                Review updatedReview = dialog.GetReview(); // ERROR HERE
+                Review updatedReview = dialog.GetReview();
                 updatedReview.author = this.review.author;
                 if (updatedReview == null)
                 {

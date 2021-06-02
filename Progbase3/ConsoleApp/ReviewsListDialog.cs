@@ -21,9 +21,12 @@ namespace ConsoleApp
         private ReviewRepository reviewRepo;
         private FilmRepository filmRepo;
         private UserRepository userRepo;
+        private User user;
 
-        public ReviewsListDialog()
+        public ReviewsListDialog(User user)
         {
+            this.user = user;
+
             allReviewsListView = new ListView(new List<Review>())
             {
                 Width = Dim.Fill(),
@@ -158,7 +161,7 @@ namespace ConsoleApp
         public void OnOpenReview(ListViewItemEventArgs args)
         {
             Review review = (Review)args.Value;
-            OpenReviewDialog dialog = new OpenReviewDialog();
+            OpenReviewDialog dialog = new OpenReviewDialog(this.user);
             review.film = filmRepo.GetById(review.filmId);
             review.author = userRepo.GetById(review.userId);
             dialog.SetReview(review);

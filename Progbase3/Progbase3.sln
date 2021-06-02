@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp", "ConsoleApp\ConsoleApp.csproj", "{D5B9E55D-593F-44AB-9518-0B608122FB82}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserAuthentication", "UserAuthentication\UserAuthentication.csproj", "{9948E89F-77AA-4AFC-82B8-0443407663AB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,17 @@ Global
 		{B21833E9-6712-4B43-A30D-326BCD99EFAE}.Release|x64.Build.0 = Release|Any CPU
 		{B21833E9-6712-4B43-A30D-326BCD99EFAE}.Release|x86.ActiveCfg = Release|Any CPU
 		{B21833E9-6712-4B43-A30D-326BCD99EFAE}.Release|x86.Build.0 = Release|Any CPU
+		{9948E89F-77AA-4AFC-82B8-0443407663AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9948E89F-77AA-4AFC-82B8-0443407663AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9948E89F-77AA-4AFC-82B8-0443407663AB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9948E89F-77AA-4AFC-82B8-0443407663AB}.Debug|x64.Build.0 = Debug|Any CPU
+		{9948E89F-77AA-4AFC-82B8-0443407663AB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9948E89F-77AA-4AFC-82B8-0443407663AB}.Debug|x86.Build.0 = Debug|Any CPU
+		{9948E89F-77AA-4AFC-82B8-0443407663AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9948E89F-77AA-4AFC-82B8-0443407663AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9948E89F-77AA-4AFC-82B8-0443407663AB}.Release|x64.ActiveCfg = Release|Any CPU
+		{9948E89F-77AA-4AFC-82B8-0443407663AB}.Release|x64.Build.0 = Release|Any CPU
+		{9948E89F-77AA-4AFC-82B8-0443407663AB}.Release|x86.ActiveCfg = Release|Any CPU
+		{9948E89F-77AA-4AFC-82B8-0443407663AB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

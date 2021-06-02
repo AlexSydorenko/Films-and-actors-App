@@ -1,47 +1,46 @@
-using System.Collections.Generic;
 using Terminal.Gui;
+using System.Collections.Generic;
 
 namespace ConsoleApp
 {
-    public class FilmsListDialog : Dialog
+    public class UsersListDialog : Dialog
     {
         private int pageLength = 5;
         private int page = 1;
         private string searchValue = "";
 
-        private ListView allFilmsListView;
+        private ListView allUsersListView;
         private FrameView frameView;
         private Label currentPageLbl;
         private Label totalPagesLbl;
         private Button prevPageBtn;
         private Button nextPageBtn;
         private Label slash;
-        private Label noFilmsLbl;
+        private Label noUsersLbl;
         private TextField searchInput;
-        private FilmRepository filmRepo;
+        private UserRepository userRepo;
         private ReviewRepository reviewRepo;
-        private FilmActorsRepository filmActorsRepo;
         private User user;
 
-        public FilmsListDialog(User user)
+        public UsersListDialog(User user)
         {
             this.user = user;
 
-            allFilmsListView = new ListView(new List<Film>())
+            allUsersListView = new ListView(new List<User>())
             {
                 Width = Dim.Fill(),
                 Height = Dim.Fill()
             };
-            allFilmsListView.OpenSelectedItem += OnOpenFilm;
+            allUsersListView.OpenSelectedItem += OnOpenUser;
 
-            frameView = new FrameView("Films list")
+            frameView = new FrameView("Users list")
             {
                 X = 2,
                 Y = 6,
                 Width = Dim.Fill() - 4,
                 Height = pageLength + 2,
             };
-            frameView.Add(allFilmsListView);
+            frameView.Add(allUsersListView);
             this.Add(frameView);
 
             // previous & next buttons
@@ -79,12 +78,12 @@ namespace ConsoleApp
             };
             this.Add(currentPageLbl, slash, totalPagesLbl);
 
-            // if there are no films in the database
-            noFilmsLbl = new Label(1, 1, "There are no films in the database!")
+            // if there are no users in the database
+            noUsersLbl = new Label(1, 1, "There are no users in the database!")
             {
                 Visible = false,
             };
-            frameView.Add(noFilmsLbl);
+            frameView.Add(noUsersLbl);
 
             Button backBtn = new Button("Back")
             {
@@ -100,10 +99,9 @@ namespace ConsoleApp
             this.Add(searchInput);
         }
 
-        public void SetRepository(FilmRepository filmRepo, FilmActorsRepository filmActorsRepo, ReviewRepository reviewRepo)
+        public void SetRepository(UserRepository userRepo, ReviewRepository reviewRepo)
         {
-            this.filmRepo = filmRepo;
-            this.filmActorsRepo = filmActorsRepo;
+            this.userRepo = userRepo;
             this.reviewRepo = reviewRepo;
             this.UpdCurrentPage();
         }
@@ -119,22 +117,22 @@ namespace ConsoleApp
 
         public void UpdCurrentPage()
         {
-            int totalPages = filmRepo.GetSearchPagesCount(searchValue, pageLength);
+            int totalPages = userRepo.GetSearchPagesCount(searchValue, pageLength);
             if (page > totalPages && page > 1)
             {
                 page = totalPages;
             }
             this.currentPageLbl.Text = page.ToString();
             this.totalPagesLbl.Text = totalPages.ToString();
-            this.allFilmsListView.SetSource(filmRepo.GetSearchPage(searchValue, page, pageLength));
+            this.allUsersListView.SetSource(userRepo.GetSearchPage(searchValue, page, pageLength));
 
             this.prevPageBtn.Visible = (page > 1);
-            this.nextPageBtn.Visible = (page < filmRepo.GetTotalPages(pageLength));
+            this.nextPageBtn.Visible = (page < userRepo.GetTotalPages(pageLength));
 
-            if (this.allFilmsListView.Source.ToList().Count == 0)
+            if (this.allUsersListView.Source.ToList().Count == 0)
             {
-                this.allFilmsListView.Visible = false;
-                this.noFilmsLbl.Visible = true;
+                this.allUsersListView.Visible = false;
+                this.noUsersLbl.Visible = true;
                 this.currentPageLbl.Visible = false;
                 this.totalPagesLbl.Visible = false;
                 this.slash.Visible = false;
@@ -143,8 +141,8 @@ namespace ConsoleApp
             }
             else
             {
-                this.allFilmsListView.Visible = true;
-                this.noFilmsLbl.Visible = false;
+                this.allUsersListView.Visible = true;
+                this.noUsersLbl.Visible = false;
                 this.currentPageLbl.Visible = true;
                 this.totalPagesLbl.Visible = true;
                 this.slash.Visible = true;
@@ -153,44 +151,43 @@ namespace ConsoleApp
             }
         }
 
-        public void OnOpenFilm(ListViewItemEventArgs args)
+        public void OnOpenUser(ListViewItemEventArgs args)
         {
-            Film film = (Film)args.Value;
-            OpenFilmDialog dialog = new OpenFilmDialog(this.user);
-            dialog.SetFilm(film);
+            User selectedUser = (User)args.Value;
+            OpenUserDialog dialog = new OpenUserDialog(this.user);
+            dialog.SetUser(selectedUser);
 
             Application.Run(dialog);
 
             if (dialog.deleted)
             {
-                bool result = filmRepo.Delete(film.id);
+                bool result = userRepo.Delete(selectedUser.username);
                 if (result)
                 {
-                    filmActorsRepo.DeleteFilm(film.id);
-                    reviewRepo.DeleteAllFilmReviews(film.id);
-                    if (page > filmRepo.GetTotalPages(pageLength) && page > 1)
+                    reviewRepo.DeleteAllAuthorReviews(selectedUser.id);
+                    if (page > userRepo.GetTotalPages(pageLength) && page > 1)
                     {
                         page--;
                     }
-                    allFilmsListView.SetSource(filmRepo.GetPage(page, pageLength));
+                    allUsersListView.SetSource(userRepo.GetPage(page, pageLength));
                     this.UpdCurrentPage();
                 }
                 else
                 {
-                    MessageBox.ErrorQuery("Delete film", "Film cannot be deleted!", "OK");
+                    MessageBox.ErrorQuery("Delete user", "User cannot be deleted!", "OK");
                 }
             }
 
             if (dialog.updated)
             {
-                bool result = filmRepo.Update(film.id, dialog.GetFilm());
+                bool result = userRepo.Update(selectedUser.id, dialog.GetUser());
                 if (result)
                 {
-                    allFilmsListView.SetSource(filmRepo.GetPage(page, pageLength));
+                    allUsersListView.SetSource(userRepo.GetPage(page, pageLength));
                 }
                 else
                 {
-                    MessageBox.ErrorQuery("Update film", "Film cannot be updated!", "OK");
+                    MessageBox.ErrorQuery("Update user", "User cannot be updated!", "OK");
                 }
             }
         }
@@ -207,7 +204,7 @@ namespace ConsoleApp
 
         public void OnNextPage()
         {
-            if (page >= filmRepo.GetTotalPages(pageLength))
+            if (page >= userRepo.GetTotalPages(pageLength))
             {
                 return;
             }

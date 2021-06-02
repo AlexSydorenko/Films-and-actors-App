@@ -75,7 +75,7 @@ namespace ConsoleApp
         static void GenerateFilmsAndActors(int numOfFilms, string dbFilepath)
         {
             Random random = new Random();
-
+            
             FilmRepository filmRepo = new FilmRepository(dbFilepath);
             ActorRepository actorRepo = new ActorRepository(dbFilepath);
             FilmActorsRepository filmActorsRepo = new FilmActorsRepository(dbFilepath);

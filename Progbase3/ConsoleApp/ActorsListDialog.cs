@@ -20,9 +20,12 @@ namespace ConsoleApp
         private TextField searchInput;
         private ActorRepository actorRepo;
         private FilmActorsRepository filmActorsRepo;
+        private User user;
 
-        public ActorsListDialog()
+        public ActorsListDialog(User user)
         {
+            this.user = user;
+
             allActorsListView = new ListView(new List<Actor>())
             {
                 Width = Dim.Fill(),
@@ -150,7 +153,7 @@ namespace ConsoleApp
         public void OnOpenActor(ListViewItemEventArgs args)
         {
             Actor actor = (Actor)args.Value;
-            OpenActorDialog dialog = new OpenActorDialog();
+            OpenActorDialog dialog = new OpenActorDialog(this.user);
             dialog.SetActor(actor);
 
             Application.Run(dialog);

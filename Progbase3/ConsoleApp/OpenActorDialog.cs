@@ -11,10 +11,12 @@ namespace ConsoleApp
         private TextField ageInput;
         private TextField residenceInput;
         protected Actor actor;
+        private User user;
 
-        public OpenActorDialog()
+        public OpenActorDialog(User user)
         {
             this.Title = "Actor info";
+            this.user = user;
 
             int inputsColumnX = 20;
             int inputWidth = 40;
@@ -93,6 +95,12 @@ namespace ConsoleApp
 
         public void OnDeleteActor()
         {
+            if (this.user.role != "admin")
+            {
+                MessageBox.ErrorQuery("", "Actors can be deleted only by admins!", "OK");
+                return;
+            }
+
             int index = MessageBox.Query("Delete actor", "Are you sure?", "No", "Yes");
             if (index == 1)
             {
@@ -103,6 +111,12 @@ namespace ConsoleApp
 
         public void OnEditActor()
         {
+            if (this.user.role != "admin")
+            {
+                MessageBox.ErrorQuery("", "Actors can be edited only by admins!", "OK");
+                return;
+            }
+
             EditActorDialog dialog = new EditActorDialog();
             dialog.SetActor(this.actor);
 

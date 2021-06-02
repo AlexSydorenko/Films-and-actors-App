@@ -45,6 +45,12 @@ namespace ConsoleApp
             int selected = radioGroup.SelectedItem;
             if (selected == 0)
             {
+                if (this.user.role != "admin")
+                {
+                    MessageBox.ErrorQuery("", "Films may be added only by admin!", "OK");
+                    return;
+                }
+
                 CreateFilmDialog dialog = new CreateFilmDialog();
                 Application.Run(dialog);
 
@@ -67,6 +73,12 @@ namespace ConsoleApp
             }
             else if (selected == 1)
             {
+                if (this.user.role != "admin")
+                {
+                    MessageBox.ErrorQuery("", "Films may be added only by admin!", "OK");
+                    return;
+                }
+
                 CreateActorDialog dialog = new CreateActorDialog();
                 Application.Run(dialog);
 

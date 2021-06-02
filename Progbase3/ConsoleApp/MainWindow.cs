@@ -1,30 +1,23 @@
 using System.Collections.Generic;
 using Terminal.Gui;
 using System.IO;
+using System.Threading;
 
 namespace ConsoleApp
 {
     public class MainWindow : Window
     {
-        // private ListView listView;
         private string databasePath;
-        private User user;
-        // private FilmRepository filmRepo;
+        private User user = null;
+        private Button registerBtn;
+        private Button loginBtn;
+        private Button logoutBtn;
+        private Label introLbl;
 
         public MainWindow(string databasePath)
         {
             this.databasePath = databasePath;
-            this.Title = "Films database";
-
-            // CREATE USER HERE DEPENDING ON AUTHORIZED
-            ///////////////////////////////////////////
-            user = new User()
-            {
-                id = 1,
-                fullName = "John McTominnay",
-                username = "user007",
-            };
-            ///////////////////////////////////////////
+            this.Title = "KinoPoisk";
 
             MenuBar menu = new MenuBar(new MenuBarItem[] {
                 new MenuBarItem ("_File", new MenuItem [] {
@@ -38,21 +31,113 @@ namespace ConsoleApp
             });
             this.Add(menu);
 
+            introLbl = new Label(2, 6, "Hello!")
+            {
+                Width = 50,
+            };
+            this.Add(introLbl);
+
+            Label infoLbl = new Label(2, 8, "Welcome to the one of the world's biggest films database \"KinoPoisk\"!\n" +
+                "Here you can get ingormation about many popular films!\n" +
+                "We'll appreciate if you write reviews on films you watched!");
+            this.Add(infoLbl);
+
             Button createBtn = new Button("Add new")
             {
                 X = 2,
-                Y = 6,
+                Y = 12,
             };
             createBtn.Clicked += OnCreate;
             this.Add(createBtn);
 
             Button showBtn = new Button("Show all")
             {
-                X = 2,
-                Y = 8,
+                X = Pos.Right(createBtn) + 3,
+                Y = Pos.Top(createBtn),
             };
             showBtn.Clicked += OnShowAll;
             this.Add(showBtn);
+
+            registerBtn = new Button("Sign up")
+            {
+                X = Pos.Right(this) - 28,
+                Y = 2,
+            };
+            registerBtn.Clicked += OnSignUp;
+            this.Add(registerBtn);
+
+            loginBtn = new Button("Log in")
+            {
+                X = Pos.Right(this) - 15,
+                Y = 2,
+            };
+            loginBtn.Clicked += OnLogIn;
+            this.Add(loginBtn);
+
+            logoutBtn = new Button("Log out")
+            {
+                X = Pos.Right(this) - 15,
+                Y = 2,
+                Visible = false,
+            };
+            logoutBtn.Clicked += OnLogOut;
+            this.Add(logoutBtn);
+        }
+
+        public void OnSignUp()
+        {
+            RegistrationDialog dialog = new RegistrationDialog(databasePath);
+            Application.Run(dialog);
+
+            if (!dialog.canceled)
+            {
+                Authentication authentication = new Authentication(new UserRepository(databasePath));
+                this.user = dialog.GetUser();
+                long userId = authentication.RegisterUser(this.user);
+                this.user.id = (int)userId;
+
+                MessageBox.Query("", $"You have successfully registered in the system! Your unique id: `{this.user.id}`", "OK");
+                this.loginBtn.Visible = false;
+                this.registerBtn.Visible = false;
+                this.logoutBtn.Visible = true;
+                this.introLbl.Text = $"Hello, {this.user.username}!";
+            }
+        }
+
+        public void OnLogIn()
+        {
+            LoginDialog dialog = new LoginDialog(databasePath);
+            Application.Run(dialog);
+
+            if (!dialog.canceled)
+            {
+                Authentication authentication = new Authentication(new UserRepository(databasePath));
+                this.user = authentication.LoginUser(dialog.GetUserData()[0], dialog.GetUserData()[1]);
+                if (this.user == null)
+                {
+                    MessageBox.ErrorQuery("Error", "Incorrect username or password!", "OK");
+                    return;
+                }
+                MessageBox.Query("", $"You have successfully logged in the system!", "OK");
+                this.loginBtn.Visible = false;
+                this.registerBtn.Visible = false;
+                this.logoutBtn.Visible = true;
+                this.introLbl.Text = $"Hello, {this.user.username}!";
+            }
+        }
+
+        public void OnLogOut()
+        {
+            int index = MessageBox.Query("Log Out", "Are you sure?", "No", "Yes");
+            if (index == 0)
+            {
+                return;
+            }
+            this.user = null;
+            this.loginBtn.Visible = true;
+            this.registerBtn.Visible = true;
+            this.logoutBtn.Visible = false;
+            this.introLbl.Text = "Hello!";
         }
 
         public void OnAbout()
@@ -67,6 +152,12 @@ namespace ConsoleApp
 
         public void OnExport()
         {
+            if (this.user == null)
+            {
+                MessageBox.ErrorQuery("", "Please, log in or register at first!", "OK");
+                return;
+            }
+
             ExportDialog dialog = new ExportDialog();
             Application.Run(dialog);
 
@@ -93,6 +184,18 @@ namespace ConsoleApp
 
         public void OnImport()
         {
+            if (this.user == null)
+            {
+                MessageBox.ErrorQuery("", "Please, log in or register at first!", "OK");
+                return;
+            }
+
+            if (this.user.role != "admin")
+            {
+                MessageBox.ErrorQuery("", "Only admin can do import into the database!", "OK");
+                return;
+            }
+
             OpenDialog dialog = new OpenDialog();
             Application.Run(dialog);
 
@@ -131,12 +234,24 @@ namespace ConsoleApp
 
         public void OnCreate()
         {
+            if (this.user == null)
+            {
+                MessageBox.ErrorQuery("", "Please, log in or register at first!", "OK");
+                return;
+            }
+
             ChooseWhatCreateDialog dialog = new ChooseWhatCreateDialog(databasePath, user);
             Application.Run(dialog);
         }
 
         public void OnShowAll()
         {
+            if (this.user == null)
+            {
+                MessageBox.ErrorQuery("", "Please, log in or register at first!", "OK");
+                return;
+            }
+
             ShowAllDialog dialog = new ShowAllDialog(databasePath, user);
             Application.Run(dialog);
         }
