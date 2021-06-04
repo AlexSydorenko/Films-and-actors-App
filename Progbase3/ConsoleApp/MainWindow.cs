@@ -58,6 +58,14 @@ namespace ConsoleApp
             showBtn.Clicked += OnShowAll;
             this.Add(showBtn);
 
+            Button generateBtn = new Button("Generate report")
+            {
+                X = 2,
+                Y = Pos.Bottom(createBtn) + 1,
+            };
+            generateBtn.Clicked += OnGenerate;
+            this.Add(generateBtn);
+
             registerBtn = new Button("Sign up")
             {
                 X = Pos.Right(this) - 28,
@@ -254,6 +262,27 @@ namespace ConsoleApp
 
             ShowAllDialog dialog = new ShowAllDialog(databasePath, user);
             Application.Run(dialog);
+        }
+
+        public void OnGenerate()
+        {
+            if (this.user == null)
+            {
+                MessageBox.ErrorQuery("", "Please, log in or register at first!", "OK");
+                return;
+            }
+
+            SelectFilmDialog dialog = new SelectFilmDialog(databasePath);
+            Application.Run(dialog);
+
+            if (!dialog.canceled)
+            {
+                ReportGenerator reportGenerator = new ReportGenerator(databasePath);
+                Film film = new FilmRepository(databasePath).GetByTitle(dialog.GetFilmTitle());
+                reportGenerator.GenerateReport(film);
+
+                MessageBox.Query("", $"Report on the film `{dialog.GetFilmTitle()}` was successfully created!", "OK");
+            }
         }
     }
 }

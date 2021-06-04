@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\DataManager\DataManager.csproj" />
     <ProjectReference Include="..\UserAuthentication\UserAuthentication.csproj" />
+    <ProjectReference Include="..\ReportGenerator\ReportGenerator.csproj" />
   </ItemGroup>
 
 </Project>

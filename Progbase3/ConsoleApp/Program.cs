@@ -1,10 +1,5 @@
 ﻿using System;
 using System.IO;
-using Microsoft.Data.Sqlite;
-using System.Text;
-using System.Diagnostics;
-using System.Linq;
-using System.Collections.Generic;
 using Terminal.Gui;
 
 namespace ConsoleApp
@@ -15,13 +10,20 @@ namespace ConsoleApp
 
         static void Main(string[] args)
         {
-            Application.Init();
-            Toplevel top = Application.Top;
+            if (!File.Exists(databasePath))
+            {
+                Console.WriteLine("Program could not be run! Database file was replaced!");
+            }
+            else
+            {
+                Application.Init();
+                Toplevel top = Application.Top;
 
-            MainWindow win = new MainWindow(databasePath);
-            top.Add(win);
+                MainWindow win = new MainWindow(databasePath);
+                top.Add(win);
 
-            Application.Run();
+                Application.Run();
+            }
         }
     }
 }
