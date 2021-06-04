@@ -142,6 +142,8 @@ namespace ConsoleApp
                 this.currentPageLbl.Visible = false;
                 this.totalPagesLbl.Visible = false;
                 this.slash.Visible = false;
+                this.nextPageBtn.Visible = false;
+                this.prevPageBtn.Visible = false;
             }
             else
             {
@@ -150,6 +152,8 @@ namespace ConsoleApp
                 this.currentPageLbl.Visible = true;
                 this.totalPagesLbl.Visible = true;
                 this.slash.Visible = true;
+                this.nextPageBtn.Visible = true;
+                this.prevPageBtn.Visible = true;
             }
         }
 
