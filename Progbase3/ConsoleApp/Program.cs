@@ -12,7 +12,7 @@ namespace ConsoleApp
         {
             if (!File.Exists(databasePath))
             {
-                Console.WriteLine("Program could not be run! Database file was replaced!");
+                Console.WriteLine("Program cannot be run! Database file was replaced!");
             }
             else
             {

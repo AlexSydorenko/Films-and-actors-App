@@ -17,11 +17,11 @@ namespace ConsoleApp
 
         public void GenerateReport(Film film)
         {
-            XElement root = XElement.Load("/home/alex/projects/progbase3/Progbase3/report/content.xml");
+            XElement root = XElement.Load("/home/alex/projects/progbase3/Progbase3/filmReportPattern/content.xml");
             string[] filmData = GetAllFilmInformation(film);
             FindAndReplace(root, filmData);
-            root.Save("/home/alex/projects/progbase3/Progbase3/report/content.xml");
-            ZipFile.CreateFromDirectory("../report", $"../{filmData[0]}.docx");
+            root.Save("/home/alex/projects/progbase3/Progbase3/filmReportPattern/content.xml");
+            ZipFile.CreateFromDirectory("../filmReportPattern", $"../{filmData[0]}.docx");
         }
 
         public string[] GetAllFilmInformation(Film film)
