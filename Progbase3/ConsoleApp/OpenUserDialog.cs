@@ -97,7 +97,7 @@ namespace ConsoleApp
 
         public void OnDeleteUser()
         {
-            if (this.GetUser().role != "admin")
+            if (this.user.role != "admin")
             {
                 MessageBox.ErrorQuery("", "Users can be deleted only by admins!", "OK");
                 return;
